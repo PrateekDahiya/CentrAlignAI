@@ -16,7 +16,8 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 - `backend/main.py:1` — FastAPI wiring only.
 
 ## Conventions (enforced)
-- No file >250 lines (current max 55). One responsibility per file.
+- No file >250 lines (current max 58). One responsibility per file.
+- Logging: `inside {method} for {identifier}` as first line of every method (backend `inside()`, frontend `console.info`).
 - `CONTEXT.md` in every directory, updated after each phase.
 - No secrets in git. No real company data — mock PDFs only.
 

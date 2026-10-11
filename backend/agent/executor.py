@@ -5,9 +5,11 @@ from backend.agent.groq_client import chat
 from backend.agent.prompts.executor_prompt import EXECUTOR_SYSTEM
 from backend.config import settings
 from backend.utils.errors import RetryableError
+from backend.utils.logging import inside
 
 
 def _call_tool(tools: dict, name: str, args: dict, retries: int = 3) -> str:
+    inside("_call_tool", name)
     fn = (tools or {}).get(name)
     if fn is None:
         return f"unknown tool: {name}"
@@ -29,6 +31,7 @@ def _call_tool(tools: dict, name: str, args: dict, retries: int = 3) -> str:
 
 def execute_step(goal: dict, step_hint: dict, facts: dict,
                  tool_schemas: list | None, tools: dict | None) -> dict:
+    inside("execute_step", str((step_hint or {}).get("tool", "-")))
     ctx = f"GOAL: {json.dumps(goal)}\nSTEP: {json.dumps(step_hint)}\nFACTS: {json.dumps(facts)}"
     res = chat(
         [{"role": "system", "content": EXECUTOR_SYSTEM},

@@ -3,9 +3,11 @@ import json
 from backend.agent.groq_client import chat
 from backend.agent.prompts.planner_prompt import PLANNER_SYSTEM
 from backend.config import settings
+from backend.utils.logging import inside
 
 
 def make_plan(goal: dict, tool_names: list[str]) -> list[dict]:
+    inside("make_plan", str(goal.get("objective", "-")))
     system = PLANNER_SYSTEM.format(tools=tool_names or ["(none yet)"],
                                    max_steps=settings.max_steps)
     res = chat(

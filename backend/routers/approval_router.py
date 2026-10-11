@@ -5,12 +5,14 @@ from backend.db.session import get_db
 from backend.models.run import Run
 from backend.models.fact import Fact
 from backend.schemas.approval_schema import ApprovalIn
+from backend.utils.logging import inside
 
 router = APIRouter(prefix="/api/runs", tags=["approval"])
 
 
 @router.post("/{run_id}/approve")
 def approve(run_id: str, body: ApprovalIn, db: Session = Depends(get_db)):
+    inside("approve", run_id)
     run = db.query(Run).filter_by(id=run_id).one()
     db.add(Fact(run_id=run_id, k="user_approval",
                 v=f"approved={body.approved} answer={body.answer}"))

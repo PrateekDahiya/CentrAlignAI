@@ -9,9 +9,11 @@ from backend.config import settings
 from backend.models.step import Step
 from backend.services.run_service import create_run, set_status
 from backend.services.trace_service import append_trace
+from backend.utils.logging import inside
 
 
 def _emit(run_id: str, event: dict) -> None:
+    inside("_emit", run_id)
     append_trace(run_id, event)
     try:
         from backend.services.sse_service import get_queue
@@ -22,6 +24,7 @@ def _emit(run_id: str, event: dict) -> None:
 
 def run_task(db: Session, task: str, tools: dict | None = None,
              tool_schemas: list | None = None) -> dict:
+    inside("run_task", task)
     run = create_run(db, task)
     _emit(run.id, {"type": "started", "task": task})
     goal = parse_goal(task)

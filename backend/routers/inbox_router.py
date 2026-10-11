@@ -1,6 +1,7 @@
 """Inbox router: list fake invoice PDFs (thin)."""
 import os
 from fastapi import APIRouter
+from backend.utils.logging import inside
 
 router = APIRouter(prefix="/api/inbox", tags=["inbox"])
 INBOX = os.path.join(os.path.dirname(__file__), "..", "..", "data", "inbox")
@@ -8,6 +9,7 @@ INBOX = os.path.join(os.path.dirname(__file__), "..", "..", "data", "inbox")
 
 @router.get("/files")
 def list_files():
+    inside("list_files", "-")
     path = os.path.abspath(INBOX)
     if not os.path.isdir(path):
         return []

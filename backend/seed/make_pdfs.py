@@ -2,6 +2,7 @@
 import os
 from reportlab.lib.pagesizes import LETTER
 from reportlab.pdfgen import canvas
+from backend.utils.logging import inside
 
 INBOX = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "inbox"))
 
@@ -13,6 +14,7 @@ FAKES = [
 
 
 def make_pdfs() -> list[str]:
+    inside("make_pdfs", "-")
     os.makedirs(INBOX, exist_ok=True)
     made = []
     for fname, vendor, no, amt, due in FAKES:

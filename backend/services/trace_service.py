@@ -1,9 +1,11 @@
 """Trace service: append JSONL per run only."""
 import os
 import json
+from backend.utils.logging import inside
 
 
 def append_trace(run_id: str, event: dict) -> None:
+    inside("append_trace", run_id)
     d = os.path.join("runs", run_id)
     os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "trace.jsonl"), "a", encoding="utf-8") as f:
