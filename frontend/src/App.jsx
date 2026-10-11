@@ -1,10 +1,9 @@
 import TaskForm from "./components/TaskForm.jsx";
 import StepList from "./components/StepList.jsx";
-import EvidenceCard from "./components/EvidenceCard.jsx";
-import ApprovalModal from "./components/ApprovalModal.jsx";
-import StatusBadge from "./components/StatusBadge.jsx";
 import { useRun } from "./hooks/useRun.js";
 import { useApproval } from "./hooks/useApproval.js";
+import StatusBadge from "./components/StatusBadge.jsx";
+import ApprovalModal from "./components/ApprovalModal.jsx";
 
 export default function App() {
   const { runId, createRun } = useRun();
@@ -24,8 +23,8 @@ export default function App() {
       {waiting && (
         <ApprovalModal question={question} onApprove={approve} onDecline={decline} />
       )}
+      <h3>Steps</h3>
       <StepList runId={runId} />
-      <EvidenceCard runId={runId} status={status} />
     </main>
   );
 }
