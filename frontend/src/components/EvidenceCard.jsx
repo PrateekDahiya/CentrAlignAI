@@ -1,4 +1,11 @@
-export default function EvidenceCard({ runId }) {
+export default function EvidenceCard({ runId, status }) {
   if (!runId) return null;
-  return <a href={`/api/runs/${runId}/trace`} target="_blank" rel="noreferrer">Download trace</a>;
+  return (
+    <div>
+      <p>status: {status || "running"}</p>
+      <a href={`/api/runs/${runId}/trace`} target="_blank" rel="noreferrer">
+        Download trace
+      </a>
+    </div>
+  );
 }

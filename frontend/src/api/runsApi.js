@@ -12,3 +12,9 @@ export async function fetchTrace(runId) {
   const r = await fetch(`/api/runs/${runId}/trace`);
   return r.json().catch(() => r.text());
 }
+
+export async function fetchStatus(runId) {
+  console.info(`inside fetchStatus for ${runId}`);
+  const r = await fetch(`/api/runs/${runId}/status`);
+  return r.json();
+}

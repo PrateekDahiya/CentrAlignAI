@@ -16,7 +16,7 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 - `backend/main.py:1` — FastAPI wiring only.
 
 ## Conventions (enforced)
-- No file >250 lines (current max 72). One responsibility per file.
+- No file >250 lines (current max 99). One responsibility per file.
 - Logging: `inside {method} for {identifier}` as first line of every method (backend `inside()`, frontend `console.info`).
 - `CONTEXT.md` in every directory, updated after each phase.
 - No secrets in git. No real company data — mock PDFs only.
@@ -26,6 +26,6 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 - [x] Phase 1: MySQL tables, seed PDFs, ERP/inbox/runs APIs verified
 - [x] Phase 2: Groq ReAct brain (prompts, parser/planner/executor/loop, live echo-tool smoke verified)
 - [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified)
-- [ ] Phase 4: SSE streaming + approval UI wiring
+- [x] Phase 4: SSE streaming + approval UI wiring
 - [ ] Phase 5: verifier + tests
 - [ ] Phase 6: packaging + demo video + submission

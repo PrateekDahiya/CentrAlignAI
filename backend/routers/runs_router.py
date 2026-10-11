@@ -1,21 +1,34 @@
-"""Runs router: create/get run rows (thin, no LLM here)."""
-from fastapi import APIRouter, Depends
+"""Runs router: create run + launch agent in background (thin)."""
+from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
+from backend.db.engine import SessionLocal
 from backend.db.session import get_db
 from backend.models.run import Run
 from backend.schemas.run_schema import RunCreate, RunOut
 from backend.utils.ids import new_run_id
 from backend.utils.logging import inside
+from backend.agent.loop import run_task
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
 
 
+def _execute(run_id: str, task: str) -> None:
+    inside("_execute", run_id)
+    db = SessionLocal()
+    try:
+        run_task(db, task, run_id=run_id)
+    finally:
+        db.close()
+
+
 @router.post("", response_model=RunOut)
-def create_run(body: RunCreate, db: Session = Depends(get_db)):
+def create_run(body: RunCreate, background: BackgroundTasks,
+               db: Session = Depends(get_db)):
     inside("create_run", body.task)
     row = Run(id=new_run_id(), task=body.task, status="running")
     db.add(row)
     db.commit()
+    background.add_task(_execute, row.id, body.task)
     return RunOut(id=row.id, task=row.task, status=row.status)
 
 

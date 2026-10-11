@@ -67,6 +67,8 @@ curl http://localhost:8000/api/inbox/files     # 3 pdfs
 curl http://localhost:8000/api/erp/invoices    # []
 ```
 
+UI flow: enter task → `POST /api/runs` (agent runs in background) → live steps via SSE → `waiting` opens the approval modal (`GET /api/runs/{id}/status`) → Approve resumes, Decline cancels → status + trace in evidence card.
+
 ## Build (prod demo)
 
 ```powershell
@@ -80,10 +82,12 @@ pytest -q                            # Phase 5+
 1. **Custom ReAct loop, not LangGraph/CrewAI** — own the autonomy logic, explainable in viva, per-file (`parser/planner/executor/verifier`).
 2. **Dual Groq models (120b + 20b)** — 120b for reliable multi-step tool calling, 20b for cheap verify/summarize; saves TPM quota (12K limit), fallback chain on 429.
 3. **MySQL with `invoice_no UNIQUE`** — idempotent ERP writes; re-runs don't duplicate.
-4. **Small-files rule (<250 lines, actual max 72)** — `CONTEXT.md` per dir; any viva question maps to one file.
+4. **Small-files rule (<250 lines, actual max 99)** — `CONTEXT.md` per dir; any viva question maps to one file.
 5. **Trace in DB + JSONL** — `steps` table + `runs/<id>/trace.jsonl` enables replay without LLM (quota-safe demo).
 6. **Step history in executor context** — without prior observations the loop re-parsed 3x and never wrote (caught live); history fixed it.
 7. **Fail-soft tools** — `web_search`/`browser_open` return error strings, never raise, so one bad tool doesn't kill the run.
+8. **Trace file as SSE transport** — `asyncio.Queue.put_nowait` from background threads never wakes the server loop (caught live: empty stream); tailing `trace.jsonl` is thread-safe and survives restarts.
+9. **`paused` vs `done` events** — pause emits `paused` so the live stream survives approval; only `done` closes it.
 
 ## Demo tasks (generalization on same 8 tools)
 
@@ -93,15 +97,14 @@ pytest -q                            # Phase 5+
 
 ## Known limitations
 
-- SSE `events_router` is placeholder (Phase 4 streams real steps + approval resume; pause-to-`waiting` already works).
 - No `verifier.py` yet — loop trusts plan completion; hallucinated "done" caught once live (Phase 5 fixes fail-closed).
-- `ApprovalModal`/`EvidenceCard` minimal (Phase 4 enriches).
+- SSE closes after 120s idle; long user think-time needs page refresh to resume streaming (status poll + trace still work).
 - `TAVILY_API_KEY` optional; default DDG search is sparse.
 - No auth, no pagination, mock data only.
 
 ## What next (post-deadline)
 
-- Phase 4–5 per `CONTEXT.md` Phase status; demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace); `pytest` suite; `--replay` offline mode.
+- Phase 5 per `CONTEXT.md` Phase status; demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace); `pytest` suite; `--replay` offline mode.
 
 ## Assumptions
 
@@ -113,6 +116,6 @@ pytest -q                            # Phase 5+
 - [x] Phase 1: MySQL tables, seed PDFs, ERP/inbox/runs APIs verified (+ CONTEXT.md + README)
 - [x] Phase 2: Groq ReAct brain (prompts, parser/planner/executor/loop, live echo-tool smoke verified)
 - [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified)
-- [ ] Phase 4: SSE + approval UI
+- [x] Phase 4: SSE streaming + approval UI wiring
 - [ ] Phase 5: verifier + tests
 - [ ] Phase 6: packaging + video + submission (Oct 14, 11:30 AM IST)
