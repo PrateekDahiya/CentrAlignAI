@@ -13,7 +13,7 @@ Python FastAPI backend. Entry `main.py` only wires routers (no logic).
 - `schemas/` — Pydantic request/response DTOs.
 - `routers/` — thin HTTP endpoints, delegate to services/DB.
 - `services/` — DB ops, SSE queues, trace writer. No LLM.
-- `agent/` — (Phase 2+) Groq ReAct loop. Currently only `__init__.py` placeholders.
+- `agent/` — Groq ReAct loop (Phase 2 done: parser/planner/executor/loop + prompts; tools land in Phase 3). See `agent/CONTEXT.md`.
 - `utils/` — ids, errors, logging helpers.
 - `seed/` — `make_pdfs.py` (fake PDFs), `seed_db.py` (`create_all`).
 

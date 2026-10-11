@@ -99,7 +99,7 @@ pytest -q                            # Phase 5+
 
 ## What next (post-deadline)
 
-- Phase 2–5 per `CONTEXT.md` Phase status; demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace); `pytest` suite; `--replay` offline mode.
+- Phase 3–5 per `CONTEXT.md` Phase status; demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace); `pytest` suite; `--replay` offline mode.
 
 ## Assumptions
 
@@ -109,7 +109,7 @@ pytest -q                            # Phase 5+
 
 - [x] Phase 0: scaffold, config, SSL engine, React shell
 - [x] Phase 1: MySQL tables, seed PDFs, ERP/inbox/runs APIs verified (+ CONTEXT.md + README)
-- [ ] Phase 2: Groq ReAct brain
+- [x] Phase 2: Groq ReAct brain (prompts, parser/planner/executor/loop, live echo-tool smoke verified)
 - [ ] Phase 3: tools
 - [ ] Phase 4: SSE + approval UI
 - [ ] Phase 5: verifier + tests

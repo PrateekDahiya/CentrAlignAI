@@ -15,6 +15,7 @@ class Settings:
     executor_fallback: str = os.getenv("EXECUTOR_FALLBACK", "openai/gpt-oss-20b")
     verifier_model: str = os.getenv("VERIFIER_MODEL", "openai/gpt-oss-20b")
     max_steps: int = int(os.getenv("MAX_STEPS", "12"))
+    max_tokens: int = int(os.getenv("MAX_TOKENS", "2048"))
     db_host: str = os.getenv("DB_HOST", "")
     db_port: int = int(os.getenv("DB_PORT", "17886"))
     db_name: str = os.getenv("DB_NAME", "centralign")
