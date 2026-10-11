@@ -8,13 +8,13 @@ export default function StepList({ runId }) {
   const rendered = events.map((e, i) => {
     try {
       const ev = JSON.parse(e);
-      // support both raw string and structured step objects
-      const step = ev.step || ev;
+      // Extract step from the nested structure
+      const step = ev.step ? { ...ev.step, n: ev.n } : ev;
       return <StepItem key={i} step={step} />;
     } catch {
       // fallback: show raw text
       return <StepItem key={i} step={{ text: e }} />;
     }
   });
-  return <div>{rendered}</div>;
+  return <div className="steps">{rendered}</div>;
 }
