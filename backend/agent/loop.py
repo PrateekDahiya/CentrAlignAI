@@ -38,7 +38,10 @@ def _run_steps(db: Session, run: Run, goal: dict, plan: list,
                     tool=res["tool"], args_json=json.dumps(res["args"]),
                     obs=str(res["obs"])[:4000]))
         db.commit()
-        _emit(run.id, {"type": "step", "n": n, "step": res})
+        # Emit step with n included for frontend
+        _emit(run.id, {"type": "step", "n": n, "thought": res["thought"], 
+                       "tool": res["tool"], "args": res["args"], 
+                       "obs": res["obs"], "final": res["final"]})
         history.append({"n": n, "tool": res["tool"], "obs": str(res["obs"])[:1500]})
         if run.status == "waiting" or res["final"]:
             return res["obs"]
