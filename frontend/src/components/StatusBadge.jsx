@@ -1,3 +1,4 @@
 export default function StatusBadge({ status }) {
-  return <span>{status}</span>;
+  const s = (status || "unknown").toLowerCase();
+  return <span className={`badge badge-${s}`}>{status}</span>;
 }

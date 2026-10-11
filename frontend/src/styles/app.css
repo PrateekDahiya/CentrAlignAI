@@ -1,0 +1,114 @@
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --ink: #1c2333;
+  --muted: #68748c;
+  --line: #e3e8f2;
+  --accent: #2456e6;
+  --accent-ink: #ffffff;
+  --ok: #12784a;
+  --ok-bg: #e2f5e9;
+  --warn: #92580a;
+  --warn-bg: #fdf0d7;
+  --bad: #a32a2a;
+  --bad-bg: #fbe4e4;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.app { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; }
+
+.app-head h2 { margin: 0 0 4px; font-size: 24px; }
+.app-head p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+
+.run-line {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  margin: 14px 0;
+}
+
+/* task form */
+.task-form {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px;
+  box-shadow: 0 1px 3px rgba(20, 30, 60, 0.06);
+}
+.task-form textarea {
+  width: 100%; border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px 12px; font-size: 14px; resize: vertical;
+}
+.task-form textarea:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+.btn {
+  border: 0; border-radius: 8px; padding: 9px 18px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  background: var(--accent); color: var(--accent-ink); margin-top: 10px;
+}
+.btn:hover { filter: brightness(0.93); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-danger { background: var(--bad); }
+
+/* live steps */
+.steps { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.step {
+  background: var(--card); border: 1px solid var(--line);
+  border-left: 4px solid var(--muted); border-radius: 10px; padding: 10px 14px;
+}
+.step-step { border-left-color: var(--accent); }
+.step-done { border-left-color: var(--ok); }
+.step-paused, .step-waiting { border-left-color: var(--warn); background: var(--warn-bg); }
+.step-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.step-kind {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--muted);
+}
+.tool-chip {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  background: #e8eefc; color: var(--accent);
+  border-radius: 20px; padding: 2px 10px;
+}
+.step-thought { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.step-obs {
+  margin: 0; font-family: var(--mono); font-size: 12px;
+  white-space: pre-wrap; word-break: break-word;
+  background: #f7f9fd; border-radius: 6px; padding: 8px;
+}
+.step-list { margin: 6px 0 6px 18px; padding: 0; font-size: 13px; }
+.step-final { font-size: 14px; }
+.step.raw { font-family: var(--mono); font-size: 12px; }
+
+/* badges */
+.badge {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  border-radius: 20px; padding: 3px 12px; background: #e8eaf0; color: var(--muted);
+}
+.badge-running { background: #e8eefc; color: var(--accent); }
+.badge-done { background: var(--ok-bg); color: var(--ok); }
+.badge-waiting { background: var(--warn-bg); color: var(--warn); }
+.badge-cancelled, .badge-failed { background: var(--bad-bg); color: var(--bad); }
+
+/* evidence */
+.evidence {
+  margin-top: 16px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.evidence a { color: var(--accent); font-weight: 600; font-size: 14px; }
+
+/* approval modal */
+.modal-veil { position: fixed; inset: 0; background: rgba(15, 22, 40, 0.5); z-index: 10; }
+.modal {
+  background: var(--card); border-radius: 14px; padding: 20px;
+  max-width: 500px; margin: 12% auto; border-top: 5px solid var(--warn);
+}
+.modal h3 { margin: 0 0 8px; }
+.modal .q { background: var(--warn-bg); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.modal textarea { width: 100%; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 6px; }

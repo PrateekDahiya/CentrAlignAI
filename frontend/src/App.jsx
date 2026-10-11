@@ -10,11 +10,14 @@ export default function App() {
   const { runId, createRun } = useRun();
   const { status, question, waiting, approve, decline } = useApproval(runId);
   return (
-    <main style={{ maxWidth: 720, margin: "24px auto", fontFamily: "sans-serif" }}>
-      <h2>Autonomous Task Worker</h2>
+    <main className="app">
+      <div className="app-head">
+        <h2>Autonomous Task Worker</h2>
+        <p>Describe the goal — the agent plans, acts, verifies, and reports back.</p>
+      </div>
       <TaskForm onSubmit={createRun} />
       {runId && (
-        <p>
+        <p className="run-line">
           run: {runId} <StatusBadge status={status || "running"} />
         </p>
       )}
