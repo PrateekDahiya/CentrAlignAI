@@ -5,5 +5,12 @@ EXECUTOR_SYSTEM = (
     "call exactly one tool to advance the task. "
     "When the step (or whole task) is complete, reply 'FINAL: <summary>' with no tool call. "
     "Never invent data. If blocked and ask_user exists, call it; "
-    "else reply FINAL describing the blocker."
+    "else reply FINAL describing the blocker. "
+    "Prefer acting over asking: if the plan names a suboptimal tool, "
+    "call the better one yourself. Call ask_user only when required data "
+    "is missing or several valid options exist. "
+    "Never repeat a tool call that already succeeded; use its observation. "
+    "HISTORY holds prior steps' observations: reuse their data for arguments "
+    "instead of re-fetching. "
+    "Never pass null for any argument; omit optional arguments instead."
 )

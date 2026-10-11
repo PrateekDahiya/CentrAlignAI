@@ -9,6 +9,7 @@ from backend.config import settings
 from backend.models.step import Step
 from backend.services.run_service import create_run, set_status
 from backend.services.trace_service import append_trace
+from backend.agent.tools.registry import build_tools
 from backend.utils.logging import inside
 
 
@@ -26,6 +27,8 @@ def run_task(db: Session, task: str, tools: dict | None = None,
              tool_schemas: list | None = None) -> dict:
     inside("run_task", task)
     run = create_run(db, task)
+    if tools is None and tool_schemas is None:
+        tools, tool_schemas = build_tools(db, run.id)
     _emit(run.id, {"type": "started", "task": task})
     goal = parse_goal(task)
     save_fact(db, run.id, "objective", goal["objective"])
@@ -35,16 +38,24 @@ def run_task(db: Session, task: str, tools: dict | None = None,
     db.commit()
     _emit(run.id, {"type": "plan", "plan": plan})
     final = ""
+    history: list = []
     for n, item in enumerate(plan[:settings.max_steps], 1):
-        res = execute_step(goal, item, get_facts(db, run.id), tool_schemas, tools)
+        res = execute_step(goal, item, get_facts(db, run.id), tool_schemas,
+                           tools, history)
         db.add(Step(run_id=run.id, n=n, thought=res["thought"][:4000],
                     tool=res["tool"], args_json=json.dumps(res["args"]),
                     obs=str(res["obs"])[:4000]))
         db.commit()
         _emit(run.id, {"type": "step", "n": n, "step": res})
+        history.append({"n": n, "tool": res["tool"], "obs": str(res["obs"])[:1500]})
+        if run.status == "waiting":
+            final = res["obs"]
+            break
         if res["final"]:
             final = res["obs"]
             break
-    set_status(db, run.id, "done")
-    _emit(run.id, {"type": "done", "final": final})
-    return {"run_id": run.id, "goal": goal, "plan": plan, "final": final}
+    if run.status != "waiting":
+        set_status(db, run.id, "done")
+    _emit(run.id, {"type": "done", "final": final, "status": run.status})
+    return {"run_id": run.id, "goal": goal, "plan": plan,
+            "final": final, "status": run.status}

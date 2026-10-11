@@ -30,15 +30,29 @@ def _call_tool(tools: dict, name: str, args: dict, retries: int = 3) -> str:
 
 
 def execute_step(goal: dict, step_hint: dict, facts: dict,
-                 tool_schemas: list | None, tools: dict | None) -> dict:
+                 tool_schemas: list | None, tools: dict | None,
+                 history: list | None = None) -> dict:
     inside("execute_step", str((step_hint or {}).get("tool", "-")))
-    ctx = f"GOAL: {json.dumps(goal)}\nSTEP: {json.dumps(step_hint)}\nFACTS: {json.dumps(facts)}"
-    res = chat(
-        [{"role": "system", "content": EXECUTOR_SYSTEM},
-         {"role": "user", "content": ctx}],
-        primary=settings.executor_model, fallback=settings.executor_fallback,
-        tools=tool_schemas,
-    )
+    ctx = (f"GOAL: {json.dumps(goal)}\nSTEP: {json.dumps(step_hint)}\n"
+           f"FACTS: {json.dumps(facts)}\nHISTORY: {json.dumps(history or [])}")
+    msgs = [{"role": "system", "content": EXECUTOR_SYSTEM},
+            {"role": "user", "content": ctx}]
+    try:
+        res = chat(msgs, primary=settings.executor_model,
+                   fallback=settings.executor_fallback, tools=tool_schemas)
+    except Exception as e:
+        if "tool_use_failed" not in str(e) and "400" not in str(e):
+            return {"thought": "", "tool": "", "args": {},
+                    "obs": f"llm error: {e}", "final": False}
+        inside("execute_step_retry", str((step_hint or {}).get("tool", "-")))
+        msgs.append({"role": "user", "content": "Last tool call rejected "
+                     "(null/wrong args). Retry: omit optional args, never null."})
+        try:
+            res = chat(msgs, primary=settings.executor_model,
+                       fallback=settings.executor_fallback, tools=tool_schemas)
+        except Exception as e2:
+            return {"thought": "", "tool": "", "args": {},
+                    "obs": f"llm error: {e2}", "final": False}
     msg = res.choices[0].message
     thought = msg.content or getattr(msg, "reasoning", "") or ""
     calls = msg.tool_calls or []
