@@ -1,4 +1,5 @@
 """Pydantic schemas: runs."""
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -10,3 +11,10 @@ class RunOut(BaseModel):
     id: str
     task: str
     status: str
+
+
+class RunListOut(BaseModel):
+    id: str
+    task: str
+    status: str
+    created_at: datetime | None = None

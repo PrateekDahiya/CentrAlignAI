@@ -67,7 +67,7 @@ curl http://localhost:8000/api/inbox/files     # 3 pdfs
 curl http://localhost:8000/api/erp/invoices    # []
 ```
 
-UI flow: enter task → `POST /api/runs` (agent runs in background) → live steps via SSE → `waiting` opens the approval modal (`GET /api/runs/{id}/status`) → Approve resumes, Decline cancels → status + trace in evidence card.
+UI flow: enter task → `POST /api/runs` (agent runs in background) → live steps via SSE → `waiting` opens the approval modal (`GET /api/runs/{id}/status`) → Approve resumes, Decline cancels → status + trace in evidence card. The **History** section lists all past runs; clicking one reloads its steps (old `waiting` runs can be approved from there too).
 
 ## Build (prod demo)
 

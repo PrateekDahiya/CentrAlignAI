@@ -18,3 +18,9 @@ export async function fetchStatus(runId) {
   const r = await fetch(`/api/runs/${runId}/status`);
   return r.json();
 }
+
+export async function fetchRuns() {
+  console.info(`inside fetchRuns for -`);
+  const r = await fetch(`/api/runs`);
+  return r.json();
+}
