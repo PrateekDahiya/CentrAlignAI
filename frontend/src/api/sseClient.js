@@ -1,12 +1,21 @@
-export function subscribeEvents(runId, onMsg) {
+export function subscribeEvents(runId, onMsg, onDone) {
   console.info(`inside subscribeEvents for ${runId}`);
   if (!runId) return () => {};
   const es = new EventSource(`/api/runs/${runId}/events`);
-  
+  const close = () => es.close();
+
   // Only handle 'step' events
   es.addEventListener('step', (e) => {
     console.info(`received step event: ${e.data}`);
     onMsg(e.data);
+  });
+
+  // 'done' closes the stream: otherwise EventSource auto-reconnects and the
+  // server replays the whole trace, appending every step a second time.
+  es.addEventListener('done', () => {
+    console.info(`received done event, closing stream`);
+    if (onDone) onDone();
+    close();
   });
   
   // Optional: log other event types for debugging
@@ -20,5 +29,5 @@ export function subscribeEvents(runId, onMsg) {
     console.info(`received done event`);
   });
   
-  return () => es.close();
+  return close;
 }
