@@ -1,10 +1,19 @@
 import StatusBadge from "./StatusBadge.jsx";
 
-export default function EvidenceCard({ runId, status }) {
+export default function EvidenceCard({ runId, status, verified, evidence }) {
   if (!runId) return null;
+  const terminal = status === "done" || status === "failed";
   return (
     <div className="evidence">
-      <StatusBadge status={status || "running"} />
+      <div>
+        <StatusBadge status={status || "running"} />
+        {terminal && (
+          <span className={verified ? "verdict-ok" : "verdict-bad"}>
+            {verified ? "Verified" : "Not verified"}
+          </span>
+        )}
+        {evidence ? <p className="evidence-note">{evidence}</p> : null}
+      </div>
       <a href={`/api/runs/${runId}/trace`} target="_blank" rel="noreferrer">
         Download trace
       </a>

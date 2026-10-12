@@ -1,15 +1,25 @@
 import { useEffect, useState } from "react";
 import { fetchStatus } from "../api/runsApi.js";
 
+const TERMINAL = ["done", "failed", "cancelled"];
+
 export function useApproval(runId) {
   const [status, setStatus] = useState("");
   const [question, setQuestion] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [evidence, setEvidence] = useState("");
 
   useEffect(() => {
     console.info(`inside useApprovalPoll for ${runId}`);
     if (!runId) return;
     let stop = false;
     let t = null;
+    function apply(s) {
+      setStatus(s.status);
+      setQuestion(s.question || "");
+      setVerified(!!s.verified);
+      setEvidence(s.evidence || "");
+    }
     async function poll() {
       let s;
       try {
@@ -18,9 +28,8 @@ export function useApproval(runId) {
         return;
       }
       if (stop) return;
-      setStatus(s.status);
-      setQuestion(s.question || "");
-      if ((s.status === "done" || s.status === "cancelled") && t) {
+      apply(s);
+      if (TERMINAL.includes(s.status) && t) {
         clearInterval(t);
         t = null;
       }
@@ -54,5 +63,5 @@ export function useApproval(runId) {
     setStatus("cancelled");
   }
 
-  return { status, question, waiting: status === "waiting", approve, decline };
+  return { status, question, waiting: status === "waiting", approve, decline, verified, evidence };
 }

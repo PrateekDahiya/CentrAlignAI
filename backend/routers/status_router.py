@@ -1,4 +1,5 @@
-"""Run status + latest question (thin, for UI polling)."""
+"""Run status + question + verdict (thin, for UI polling)."""
+import json
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.db.session import get_db
@@ -14,4 +15,11 @@ def get_status(run_id: str, db: Session = Depends(get_db)):
     inside("get_status", run_id)
     run = db.query(Run).filter_by(id=run_id).one()
     q = db.query(Fact).filter_by(run_id=run_id, k="question").order_by(Fact.id.desc()).first()
-    return {"status": run.status, "question": q.v if q else ""}
+    v = db.query(Fact).filter_by(run_id=run_id, k="verification").order_by(Fact.id.desc()).first()
+    try:
+        verdict = json.loads(v.v) if v else {}
+    except ValueError:
+        verdict = {}
+    return {"status": run.status, "question": q.v if q else "",
+            "verified": bool(verdict.get("verified", False)),
+            "evidence": str(verdict.get("evidence", ""))}

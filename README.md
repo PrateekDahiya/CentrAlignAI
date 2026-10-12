@@ -82,29 +82,30 @@ pytest -q                            # Phase 5+
 1. **Custom ReAct loop, not LangGraph/CrewAI** — own the autonomy logic, explainable in viva, per-file (`parser/planner/executor/verifier`).
 2. **Dual Groq models (120b + 20b)** — 120b for reliable multi-step tool calling, 20b for cheap verify/summarize; saves TPM quota (12K limit), fallback chain on 429.
 3. **MySQL with `invoice_no UNIQUE`** — idempotent ERP writes; re-runs don't duplicate.
-4. **Small-files rule (<250 lines, actual max 99)** — `CONTEXT.md` per dir; any viva question maps to one file.
+4. **Small-files rule (<250 lines, actual max 109)** — `CONTEXT.md` per dir; any viva question maps to one file.
 5. **Trace in DB + JSONL** — `steps` table + `runs/<id>/trace.jsonl` enables replay without LLM (quota-safe demo).
 6. **Step history in executor context** — without prior observations the loop re-parsed 3x and never wrote (caught live); history fixed it.
 7. **Fail-soft tools** — `web_search`/`browser_open` return error strings, never raise, so one bad tool doesn't kill the run.
 8. **Trace file as SSE transport** — `asyncio.Queue.put_nowait` from background threads never wakes the server loop (caught live: empty stream); tailing `trace.jsonl` is thread-safe and survives restarts.
 9. **`paused` vs `done` events** — pause emits `paused` so the live stream survives approval; only `done` closes it.
+10. **Fail-closed verifier** — an independent Groq pass re-reads criteria + step obs + ERP rows; doubt (or any error) means `failed`, never `done`. Verified live both ways (real invoice → `done`+evidence; phantom invoice → `failed`).
 
 ## Demo tasks (generalization on same 8 tools)
 
 1. *"Find latest Acme invoice, extract amount/due date, enter into ERP"* → verified live (Phase 3): `file_list → invoice_parse → erp_create → erp_list` → ERP row `INV-1002 $7850.50 2026-11-05`. Note: ambiguous "latest" with 2 candidates correctly triggers `ask_user` instead of guessing.
 2. *"Web price → save file + log ERP"* (needs file-write tool + Phase 4 UI).
-3. *"Pay invoice #999 (missing)"* → detect fail → retry → `ask_user`, never hallucinate (verifier in Phase 5 guards false "done").
+3. *"Pay invoice #999 (missing)"* → detect fail → retry → `ask_user`, never hallucinate (fail-closed verifier marks `failed` with no ERP match).
 
 ## Known limitations
 
-- No `verifier.py` yet — loop trusts plan completion; hallucinated "done" caught once live (Phase 5 fixes fail-closed).
 - SSE closes after 120s idle; long user think-time needs page refresh to resume streaming (status poll + trace still work).
 - `TAVILY_API_KEY` optional; default DDG search is sparse.
+- No pytest suite or `--replay` offline mode yet.
 - No auth, no pagination, mock data only.
 
 ## What next (post-deadline)
 
-- Phase 5 per `CONTEXT.md` Phase status; demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace); `pytest` suite; `--replay` offline mode.
+- pytest suite + `--replay` mode; approvals table (manager gate for large invoices); demo video (3–4 min: Task1 success + Task3 gate + MySQL row + trace).
 
 ## Assumptions
 
@@ -117,5 +118,5 @@ pytest -q                            # Phase 5+
 - [x] Phase 2: Groq ReAct brain (prompts, parser/planner/executor/loop, live echo-tool smoke verified)
 - [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified)
 - [x] Phase 4: SSE streaming + approval UI wiring
-- [ ] Phase 5: verifier + tests
+- [x] Phase 5: verifier (fail-closed verify_run, done/failed verdict, UI badge, live true/false paths verified)
 - [ ] Phase 6: packaging + video + submission (Oct 14, 11:30 AM IST)

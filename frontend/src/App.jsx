@@ -2,6 +2,7 @@ import { useState } from "react";
 import TaskForm from "./components/TaskForm.jsx";
 import StepList from "./components/StepList.jsx";
 import RunHistory from "./components/RunHistory.jsx";
+import EvidenceCard from "./components/EvidenceCard.jsx";
 import { useRun } from "./hooks/useRun.js";
 import { useApproval } from "./hooks/useApproval.js";
 import StatusBadge from "./components/StatusBadge.jsx";
@@ -11,7 +12,8 @@ export default function App() {
   const { runId, createRun } = useRun();
   const [viewId, setViewId] = useState(null);
   const shownId = viewId || runId;
-  const { status, question, waiting, approve, decline } = useApproval(shownId);
+  const { status, question, waiting, approve, decline, verified, evidence } =
+    useApproval(shownId);
   return (
     <div className="layout">
       <aside className="sidebar">
@@ -43,6 +45,12 @@ export default function App() {
         )}
         <h3>Steps</h3>
         <StepList runId={shownId} />
+        <EvidenceCard
+          runId={shownId}
+          status={status}
+          verified={verified}
+          evidence={evidence}
+        />
       </main>
     </div>
   );

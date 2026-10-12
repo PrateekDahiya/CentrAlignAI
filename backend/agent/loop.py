@@ -5,6 +5,7 @@ from backend.agent.parser import parse_goal
 from backend.agent.planner import make_plan
 from backend.agent.executor import execute_step
 from backend.agent.memory import save_fact, get_facts
+from backend.agent.verifier import verify_run
 from backend.agent.tools.registry import build_tools
 from backend.config import settings
 from backend.models.run import Run
@@ -50,11 +51,17 @@ def _run_steps(db: Session, run: Run, goal: dict, plan: list,
 
 def _finish(db: Session, run: Run, final: str) -> dict:
     inside("_finish", run.id)
-    if run.status != "waiting":
-        set_status(db, run.id, "done")
-    _emit(run.id, {"type": "done" if run.status == "done" else "paused",
-                   "final": final, "status": run.status})
-    return {"run_id": run.id, "final": final, "status": run.status}
+    if run.status == "waiting":
+        _emit(run.id, {"type": "paused", "final": final, "status": run.status})
+        return {"run_id": run.id, "final": final, "status": run.status,
+                "verified": False, "evidence": ""}
+    verdict = verify_run(db, run.id)
+    set_status(db, run.id, "done" if verdict["verified"] else "failed")
+    _emit(run.id, {"type": "done", "final": final, "status": run.status,
+                   "verified": verdict["verified"],
+                   "evidence": verdict["evidence"]})
+    return {"run_id": run.id, "final": final, "status": run.status,
+            "verified": verdict["verified"], "evidence": verdict["evidence"]}
 
 
 def run_task(db: Session, task: str, tools: dict | None = None,
