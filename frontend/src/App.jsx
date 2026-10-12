@@ -13,33 +13,37 @@ export default function App() {
   const shownId = viewId || runId;
   const { status, question, waiting, approve, decline } = useApproval(shownId);
   return (
-    <main className="app">
-      <div className="app-head">
-        <h2>Autonomous Task Worker</h2>
-        <p>Describe the goal — the agent plans, acts, verifies, and reports back.</p>
-      </div>
-      <TaskForm
-        onSubmit={(t) => {
-          setViewId(null);
-          createRun(t);
-        }}
-      />
-      {shownId && (
-        <p className="run-line">
-          run: {shownId} <StatusBadge status={status || "running"} />
-        </p>
-      )}
-      {waiting && (
-        <ApprovalModal question={question} onApprove={approve} onDecline={decline} />
-      )}
-      <h3>Steps</h3>
-      <StepList runId={shownId} />
-      <RunHistory
-        selectedId={viewId}
-        liveId={runId}
-        onSelect={setViewId}
-        refreshKey={runId}
-      />
-    </main>
+    <div className="layout">
+      <aside className="sidebar">
+        <RunHistory
+          selectedId={viewId}
+          liveId={runId}
+          onSelect={setViewId}
+          refreshKey={runId}
+        />
+      </aside>
+      <main className="app">
+        <div className="app-head">
+          <h2>Autonomous Task Worker</h2>
+          <p>Describe the goal — the agent plans, acts, verifies, and reports back.</p>
+        </div>
+        <TaskForm
+          onSubmit={(t) => {
+            setViewId(null);
+            createRun(t);
+          }}
+        />
+        {shownId && (
+          <p className="run-line">
+            run: {shownId} <StatusBadge status={status || "running"} />
+          </p>
+        )}
+        {waiting && (
+          <ApprovalModal question={question} onApprove={approve} onDecline={decline} />
+        )}
+        <h3>Steps</h3>
+        <StepList runId={shownId} />
+      </main>
+    </div>
   );
 }
