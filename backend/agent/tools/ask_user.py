@@ -10,7 +10,7 @@ def ask_user(db: Session, run_id: str, question: str = "") -> str:
     db.add(Fact(run_id=run_id, k="question", v=question or "(no question)"))
     db.query(Run).filter_by(id=run_id).update({"status": "waiting"})
     db.commit()
-    return f"paused as waiting: {question} (approve via POST /api/runs/{run_id}/approve)"
+    return f"paused as waiting: {question}"
 
 
 SCHEMAS = [
