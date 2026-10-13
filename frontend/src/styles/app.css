@@ -31,7 +31,6 @@ body {
   width: 280px; flex-shrink: 0;
   border-right: 1px solid var(--line); background: var(--card);
   padding: 28px 16px;
-  position: sticky; top: 0; max-height: 100vh; overflow-y: auto;
 }
 .sidebar .history { margin-top: 0; }
 
