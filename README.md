@@ -126,4 +126,4 @@ pytest -q                            # Phase 5+
 - [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified; post-phase: `pdf_text`/`image_text` document tools → 10 total)
 - [x] Phase 4: SSE streaming + approval UI wiring
 - [x] Phase 5: verifier (fail-closed verify_run, done/failed verdict, UI badge, live true/false paths verified)
-- [ ] Phase 6: packaging + video + submission (Oct 14, 11:30 AM IST)
+- [x] Phase 6: packaging (INSTALL.md, start-demo/reset scripts, fresh-clone rehearsal green, secrets scan clean) + submission

@@ -11,6 +11,7 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 ## Key files here
 - `PRD.md` — intern problem statement (requirements baseline for the audit).
 - `INSTALL.md` — copy-paste setup/run guide (prereqs, backend+frontend, smoke checks, troubleshooting).
+- `start-demo.bat` / `reset-demo.ps1` — one-command servers / pre-recording reset.
 - `requirements.txt` — pinned Python deps (fastapi, uvicorn, groq, sqlalchemy, pymysql, pdfplumber, reportlab, playwright, pytest, sse-starlette).
 - `.env.example` — placeholder env (models, DB fields). Copy to `.env` locally. NEVER commit `.env`.
 - `.gitignore` — ignores `.env`, `.venv/`, `__pycache__/`, `runs/`, `*.db`, `data/inbox/*.pdf` (keeps `.gitkeep`), `frontend/node_modules/`, `frontend/dist/`.
@@ -30,4 +31,4 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 - [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified)
 - [x] Phase 4: SSE streaming + approval UI wiring
 - [x] Phase 5: verifier (fail-closed verify_run, done/failed verdict, UI badge, live true/false paths verified)
-- [ ] Phase 6: packaging + demo video + submission
+- [x] Phase 6: packaging (INSTALL.md, start-demo/reset scripts, fresh-clone rehearsal green, secrets scan clean) + submission

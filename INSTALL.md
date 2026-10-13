@@ -51,6 +51,10 @@ cd frontend
 npm run dev                            # → http://localhost:5173
 ```
 
+Shortcut (Windows): `start-demo.bat` opens both servers at once.
+Before recording a demo: `powershell -ExecutionPolicy Bypass -File reset-demo.ps1`
+clears local traces and regenerates the mock inbox PDFs.
+
 ## 4. Smoke check
 
 ```powershell
