@@ -14,7 +14,12 @@ export default function EvidenceCard({ runId, status, verified, evidence }) {
         )}
         {evidence ? <p className="evidence-note">{evidence}</p> : null}
       </div>
-      <a href={`/api/runs/${runId}/trace`} target="_blank" rel="noreferrer">
+      <a
+        className="btn btn-ghost btn-sm"
+        href={`/api/runs/${runId}/trace`}
+        target="_blank"
+        rel="noreferrer"
+      >
         Download trace
       </a>
     </div>

@@ -9,16 +9,26 @@ import StatusBadge from "./components/StatusBadge.jsx";
 import ApprovalModal from "./components/ApprovalModal.jsx";
 
 export default function App() {
-  const { runId, createRun } = useRun();
+  const { runId, createRun, clearRun } = useRun();
   const [viewId, setViewId] = useState(null);
   const shownId = viewId || runId;
   const { status, question, waiting, approve, decline, verified, evidence } =
     useApproval(shownId);
   const busy =
     !!shownId && (status === "" || status === "running" || status === "waiting");
+  function newChat() {
+    setViewId(null);
+    clearRun();
+  }
   return (
     <div className="layout">
       <aside className="sidebar">
+        <div className="sidebar-top">
+          <span className="brand">CentrAlignAI</span>
+          <button className="btn btn-new" type="button" onClick={newChat}>
+            + New chat
+          </button>
+        </div>
         <RunHistory
           selectedId={viewId}
           liveId={runId}
@@ -48,7 +58,7 @@ export default function App() {
           <ApprovalModal question={question} onApprove={approve} onDecline={decline} />
         )}
         <h3>Steps</h3>
-        <StepList runId={shownId} />
+        <StepList runId={shownId} busy={busy} />
         <EvidenceCard
           runId={shownId}
           status={status}

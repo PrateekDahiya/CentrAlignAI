@@ -8,5 +8,9 @@ export function useRun() {
     const out = await apiCreate(task);
     setRunId(out.id);
   }
-  return { runId, createRun };
+  function clearRun() {
+    console.info("inside clearRun for new-chat");
+    setRunId(null);
+  }
+  return { runId, createRun, clearRun };
 }

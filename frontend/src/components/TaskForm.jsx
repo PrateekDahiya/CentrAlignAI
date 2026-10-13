@@ -23,6 +23,7 @@ export default function TaskForm({ onSubmit, busy }) {
     if (!v || busy) return;
     console.info(`inside TaskFormSubmit for ${v}`);
     onSubmit(v);
+    setTask("");
   }
 
   return (

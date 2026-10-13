@@ -4,7 +4,7 @@ UI entry + composition. No data fetching here.
 
 ## Files
 - `main.jsx:1` — `createRoot` → `<App/>`.
-- `App.jsx:1` — layout only: sidebar (`RunHistory`) + main (`TaskForm`, `StepList`, approval). `viewId` switches displayed run; submit resets to live.
+- `App.jsx:1` — layout only: sidebar (brand + New chat + `RunHistory`) + main (`TaskForm`, `StepList`, approval). `viewId` switches displayed run; submit resets to live; New chat clears both.
 
 ## Subdirs
 - `api/` — fetch/SSE wrappers only.
