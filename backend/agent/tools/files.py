@@ -6,7 +6,14 @@ from backend.utils.logging import inside
 INBOX = os.path.abspath(os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "data", "inbox"))
 
-ROOTS = [os.path.abspath(r) for r in settings.file_roots] or [INBOX]
+def _root_abspath(r: str) -> str:
+    # Bare "D:" means cwd-on-D on Windows, not the drive root.
+    if len(r) == 2 and r[1] == ":" and r[0].isalpha():
+        r += os.sep
+    return os.path.abspath(r)
+
+
+ROOTS = [_root_abspath(r) for r in settings.file_roots] or [INBOX]
 
 SENSITIVE_NAMES = (".env",)
 SENSITIVE_SUFFIXES = (".pem", ".key",)
@@ -24,7 +31,7 @@ def resolve(name: str) -> str:
     p = os.path.abspath(name if os.path.isabs(name) else os.path.join(INBOX, name))
     if _sensitive(os.path.basename(p)):
         raise ValueError(f"refused: sensitive file {name!r}")
-    if not any(p == r or p.startswith(r + os.sep) for r in ROOTS):
+    if not any(p == r or p.startswith(r.rstrip(os.sep) + os.sep) for r in ROOTS):
         raise ValueError(
             f"path outside allowed roots {name!r}; ask the user to add it "
             "to FILE_ROOTS in .env and restart the backend, or to supply "

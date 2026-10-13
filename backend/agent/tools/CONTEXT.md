@@ -4,7 +4,7 @@ One tool per file + registry. Contract: `fn(**args_from_llm_json) -> str`. **Pha
 
 ## Files
 - `registry.py:1` — `build_tools(db, run_id)` → `(tools dict, schemas list)`. Binds session/run into `erp_*`/`ask_user` closures; pure tools passed direct. 8 tools, 8 schemas. Single import point for `loop.py`.
-- `files.py:1` — `resolve()` (absolute or inbox-relative; must sit under `FILE_ROOTS` or inbox, `.env`/`*.pem`/`*.key`/`*id_rsa*` refused), `file_list()` (bad subdir → inbox listing + note), `file_read()` (PDFs → "use invoice_parse" hint, 4000 chars).
+- `files.py:1` — `resolve()` (absolute or inbox-relative; must sit under `FILE_ROOTS` or inbox, `.env`/`*.pem`/`*.key`/`*id_rsa*` refused; bare `D:` normalized to drive root, trailing-sep prefix bug fixed live), `file_list()` (bad subdir → inbox listing + note), `file_read()` (PDFs → "use invoice_parse" hint, 4000 chars).
 - `invoice_parse.py:1` — `invoice_parse(path)` via pdfplumber regex → `vendor= invoice_no= amount= due_date= source_file=`. Returns `unparsed:` when no match.
 - `erp_tools.py:1` — `erp_list(db, vendor?)`, `erp_create(db, vendor, invoice_no, amount, due_date?, source_file?)`. Idempotent on `invoice_no` (returns existing). NOTE: `filter()` must precede `limit()` (SQLAlchemy rejects filter-after-limit — caught live).
 - `web_search.py:1` — `web_search(query)`: Tavily if `TAVILY_API_KEY` set, else DuckDuckGo instant answer. Failures → `search failed:` string, never raise.
