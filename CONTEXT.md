@@ -1,4 +1,4 @@
-# CONTEXT.md — Repo Root (CentrAlignAI)
+# CONTEXT.md — Repo Root (TaskPilot)
 
 Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (Groq) uses tools → writes to MySQL (Aiven) → React UI shows live steps + evidence.
 

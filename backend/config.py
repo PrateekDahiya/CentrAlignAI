@@ -24,7 +24,7 @@ class Settings:
     file_roots: tuple = _roots()
     db_host: str = os.getenv("DB_HOST", "")
     db_port: int = int(os.getenv("DB_PORT", "17886"))
-    db_name: str = os.getenv("DB_NAME", "centralign")
+    db_name: str = os.getenv("DB_NAME", "taskpilot")
     db_user: str = os.getenv("DB_USERNAME", "")
     db_password: str = os.getenv("DB_PASSWORD", "")
     db_ssl: bool = os.getenv("DB_SSL", "true").lower() == "true"

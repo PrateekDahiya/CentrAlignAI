@@ -11,8 +11,8 @@
 
 ## After deploy
 
-- API: `https://centralign-api.onrender.com/api/health` → `{"ok":true}`
-- UI: `https://centralign-ui.onrender.com` — run the smoke trio from `INSTALL.md`
+- API: `https://taskpilot-api.onrender.com/api/health` → `{"ok":true}`
+- UI: `https://taskpilot-ui.onrender.com` — run the smoke trio from `INSTALL.md`
   (invoice→ERP, ERP list, resume-style file task via inbox).
 - MySQL (Aiven) is shared with local dev — already seeded, nothing to migrate
   (the `source` column was added live; fresh DBs get it via `create_all`).

@@ -1,7 +1,7 @@
 # Render Blueprint: API (docker) + UI (static). "New → Blueprint" and fill secrets.
 services:
   - type: web
-    name: centralign-api
+          name: taskpilot-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
@@ -28,7 +28,7 @@ services:
       # File tools fall back to data/inbox in the cloud (no FILE_ROOTS there).
 
   - type: web
-    name: centralign-ui
+    name: taskpilot-ui
     runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
@@ -37,5 +37,5 @@ services:
       - key: VITE_API_URL
         fromService:
           type: web
-          name: centralign-api
+    name: taskpilot-api
           property: host

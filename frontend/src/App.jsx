@@ -26,7 +26,7 @@ export default function App() {
     <div className="layout">
       <aside className="sidebar" style={{ "--side-w": `${width}px` }}>
         <div className="sidebar-top">
-          <span className="brand">CentrAlignAI</span>
+          <span className="brand">TaskPilot</span>
           <button className="btn btn-new" type="button" onClick={newChat}>
             + New chat
           </button>

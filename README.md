@@ -1,4 +1,4 @@
-# CentrAlignAI — Autonomous AI Task Worker (Prototype)
+# TaskPilot — Autonomous AI Task Worker (Prototype)
 
 User gives a natural-language task → Groq-powered ReAct agent plans, uses tools (files, PDFs, browser, mock ERP), writes to MySQL, verifies, and the React UI streams steps + evidence.
 
@@ -37,7 +37,7 @@ Human gate: `ask_user` sets run `waiting`; UI approves via `POST /api/runs/{id}/
 
 ```powershell
 # 1. clone + python deps
-git clone <repo-url> CentrAlignAI; cd CentrAlignAI
+git clone <repo-url> TaskPilot; cd TaskPilot
 pip install -r requirements.txt
 python -m playwright install chromium   # browser tool needs the binary
 python -m playwright install chromium   # browser tool needs the binary

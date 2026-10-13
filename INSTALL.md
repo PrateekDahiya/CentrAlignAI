@@ -1,4 +1,4 @@
-# INSTALL — CentrAlignAI setup & run guide (Windows, PowerShell)
+# INSTALL — TaskPilot setup & run guide (Windows, PowerShell)
 
 One-time setup, then two terminals to run. Every command is copy-paste ready.
 Repo root in all commands: the folder containing `requirements.txt`.
