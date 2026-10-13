@@ -60,7 +60,7 @@ def file_list(directory: str = "") -> str:
 def file_read(path: str) -> str:
     inside("file_read", path)
     if path.lower().endswith(".pdf"):
-        return "hint: use invoice_parse for PDFs"
+        return "hint: use pdf_text for PDF text, invoice_parse for invoices"
     try:
         with open(resolve(path), encoding="utf-8", errors="replace") as f:
             return f.read(4000)

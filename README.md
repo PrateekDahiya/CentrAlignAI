@@ -93,7 +93,7 @@ pytest -q                            # Phase 5+
 9. **`paused` vs `done` events** — pause emits `paused` so the live stream survives approval; only `done` closes it.
 10. **Fail-closed verifier** — an independent Groq pass re-reads criteria + step obs + ERP rows; doubt (or any error) means `failed`, never `done`. Verified live both ways (real invoice → `done`+evidence; phantom invoice → `failed`).
 
-## Demo tasks (generalization on same 8 tools)
+## Demo tasks (generalization on same 10 tools)
 
 1. *"Find latest Acme invoice, extract amount/due date, enter into ERP"* → verified live (Phase 3): `file_list → invoice_parse → erp_create → erp_list` → ERP row `INV-1002 $7850.50 2026-11-05`. Note: ambiguous "latest" with 2 candidates correctly triggers `ask_user` instead of guessing.
 2. *"Web price → save file + log ERP"* (needs file-write tool + Phase 4 UI).
@@ -119,7 +119,7 @@ pytest -q                            # Phase 5+
 - [x] Phase 0: scaffold, config, SSL engine, React shell
 - [x] Phase 1: MySQL tables, seed PDFs, ERP/inbox/runs APIs verified (+ CONTEXT.md + README)
 - [x] Phase 2: Groq ReAct brain (prompts, parser/planner/executor/loop, live echo-tool smoke verified)
-- [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified)
+- [x] Phase 3: tools (8 real tools + registry, loop wiring + waiting pause, live invoice→ERP demo verified; post-phase: `pdf_text`/`image_text` document tools → 10 total)
 - [x] Phase 4: SSE streaming + approval UI wiring
 - [x] Phase 5: verifier (fail-closed verify_run, done/failed verdict, UI badge, live true/false paths verified)
 - [ ] Phase 6: packaging + video + submission (Oct 14, 11:30 AM IST)

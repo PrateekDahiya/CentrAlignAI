@@ -17,4 +17,4 @@ Groq ReAct brain. **Phase 5 done** — fail-closed verification: `_finish` runs 
 
 ## Subdirs
 - `prompts/` — one system prompt per role (see `prompts/CONTEXT.md`).
-- `tools/` — 8 real tools + `registry.py` (see `tools/CONTEXT.md`).
+- `tools/` — 10 real tools + `registry.py` (see `tools/CONTEXT.md`).
