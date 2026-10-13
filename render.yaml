@@ -1,7 +1,7 @@
 # Render Blueprint: API (docker) + UI (static). "New → Blueprint" and fill secrets.
 services:
   - type: web
-          name: taskpilot-api
+    name: taskpilot-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
@@ -37,5 +37,5 @@ services:
       - key: VITE_API_URL
         fromService:
           type: web
-    name: taskpilot-api
+          name: taskpilot-api
           property: host
