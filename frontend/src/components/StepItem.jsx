@@ -42,7 +42,11 @@ export default function StepItem({ event }) {
           <span className="step-kind">{finished ? "Finished" : "Paused"}</span>
           {event.status && <span className="tool-chip">{event.status}</span>}
         </div>
-        {event.final ? <p className="step-final">{event.final}</p> : null}
+        {event.final ? (
+          <p className="step-final">
+            {String(event.final).replace(/^FINAL:\s*/, "")}
+          </p>
+        ) : null}
         {event.evidence ? <pre className="step-obs">{event.evidence}</pre> : null}
       </div>
     );

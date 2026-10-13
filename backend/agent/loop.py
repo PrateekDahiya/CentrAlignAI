@@ -54,7 +54,7 @@ def _run_steps(db: Session, run: Run, goal: dict, plan: list,
     if final == "" and run.status != "waiting":
         inside("_wrap_up", run.id)
         n = max([h["n"] for h in history] + [0]) + 1
-        res = execute_step(goal, {"step": "Produce the final answer for the goal from HISTORY. Reply FINAL: <answer>.", "tool": None}, get_facts(db, run.id), tool_schemas, tools, history)
+        res = execute_step(goal, {"step": "Compile the deliverable the goal asked for from HISTORY, satisfying each success criterion with formatted results (no step numbers, no tool names). Reply FINAL: <deliverable>.", "tool": None}, get_facts(db, run.id), tool_schemas, tools, history)
         _save_step(db, run, n, res, history)
         if res["final"]:
             return res["obs"]
