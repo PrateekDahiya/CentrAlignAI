@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchStatus } from "../api/runsApi.js";
+import { fetchStatus, approveRun } from "../api/runsApi.js";
 
 const TERMINAL = ["done", "failed", "cancelled"];
 
@@ -44,22 +44,14 @@ export function useApproval(runId) {
 
   async function approve(answer) {
     console.info(`inside approve for ${runId}`);
-    await fetch(`/api/runs/${runId}/approve`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ approved: true, answer })
-    });
+    await approveRun(runId, true, answer);
     const s = await fetchStatus(runId);
     setStatus(s.status);
   }
 
   async function decline() {
     console.info(`inside decline for ${runId}`);
-    await fetch(`/api/runs/${runId}/approve`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ approved: false, answer: "" })
-    });
+    await approveRun(runId, false, "");
     setStatus("cancelled");
   }
 

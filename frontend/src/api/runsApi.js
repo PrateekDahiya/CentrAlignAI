@@ -26,3 +26,12 @@ export async function fetchRuns() {
   const r = await fetch(`${API_BASE}/api/runs`);
   return r.json();
 }
+
+export async function approveRun(runId, approved, answer) {
+  console.info(`inside approveRun for ${runId}`);
+  const r = await fetch(`${API_BASE}/api/runs/${runId}/approve`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ approved, answer: answer || "" })
+  });
+  return r.json();
+}
