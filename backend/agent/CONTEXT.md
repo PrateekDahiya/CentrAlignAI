@@ -9,7 +9,7 @@ Groq ReAct brain. **Phase 5 done** — fail-closed verification: `_finish` runs 
 - `executor.py:1` — `execute_step(goal, step_hint, facts, tool_schemas, tools, history?)` → `{thought, tool, args, obs, final}`. Dispatches `tools[name](**args)` with 3x retry on `RetryableError`; `TypeError`→bad-args, other→fatal. One corrective retry on Groq `tool_use_failed` (null args). No tool call + `FINAL:` prefix = done. Self-correct wrong-tool plans; ask only when data missing/options many; never repeat succeeded calls.
 - `memory.py:1` — `save_fact` / `get_facts` on `facts` table. No LLM.
 - `verifier.py:1` — `verify_run(db, run_id)` → `{verified, evidence}`. Gathers objective/criteria + step obs + ERP rows, judges via verifier model, saves `facts(verification)`. Fail-closed: parse/LLM error → False.
-- `loop.py:1` — `run_task(...)` / `resume_task(...)` share `_run_steps` (HISTORY, skip-set, waiting break) and `_finish` (verify → `done`/`failed`/`paused`, emits verdict). `_emit` writes trace JSONL + best-effort SSE queue.
+- `loop.py:1` — `run_task(...)` / `resume_task(...)` share `_run_steps` (HISTORY, skip-set, waiting break; `_save_step` helper) plus a `_wrap_up` final-answer attempt when the plan ends without FINAL, then `_finish` (verify → `done`/`failed`/`paused`, emits verdict).
 - `__init__.py` — marker.
 
 ## Tool contract

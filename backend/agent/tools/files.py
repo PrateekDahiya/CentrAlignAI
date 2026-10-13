@@ -15,14 +15,16 @@ def _root_abspath(r: str) -> str:
 
 ROOTS = [_root_abspath(r) for r in settings.file_roots] or [INBOX]
 
-SENSITIVE_NAMES = (".env",)
 SENSITIVE_SUFFIXES = (".pem", ".key",)
 SENSITIVE_PARTS = ("id_rsa",)
 
 
 def _sensitive(base: str) -> bool:
     low = base.lower()
-    return (low in SENSITIVE_NAMES or low.endswith(SENSITIVE_SUFFIXES)
+    if low == ".env.example":
+        return False
+    return (low == ".env" or low.startswith(".env.")
+            or low.endswith(SENSITIVE_SUFFIXES)
             or any(p in low for p in SENSITIVE_PARTS))
 
 
@@ -55,8 +57,13 @@ def file_read(path: str) -> str:
     inside("file_read", path)
     if path.lower().endswith(".pdf"):
         return "hint: use invoice_parse for PDFs"
-    with open(resolve(path), encoding="utf-8", errors="replace") as f:
-        return f.read(4000)
+    try:
+        with open(resolve(path), encoding="utf-8", errors="replace") as f:
+            return f.read(4000)
+    except ValueError as e:
+        return f"refused: {e}"
+    except OSError:
+        return f"not found: {os.path.basename(path)!r} (use file_list to see what's there)"
 
 
 SCHEMAS = [

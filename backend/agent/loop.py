@@ -25,6 +25,19 @@ def _emit(run_id: str, event: dict) -> None:
         pass
 
 
+def _save_step(db: Session, run: Run, n: int, res: dict, history: list) -> None:
+    inside("_save_step", run.id)
+    db.add(Step(run_id=run.id, n=n, thought=res["thought"][:4000],
+                tool=res["tool"], args_json=json.dumps(res["args"]),
+                obs=str(res["obs"])[:4000]))
+    db.commit()
+    # Emit step with n included for frontend
+    _emit(run.id, {"type": "step", "n": n, "thought": res["thought"],
+                   "tool": res["tool"], "args": res["args"],
+                   "obs": res["obs"], "final": res["final"]})
+    history.append({"n": n, "tool": res["tool"], "obs": str(res["obs"])[:1500]})
+
+
 def _run_steps(db: Session, run: Run, goal: dict, plan: list,
                tools: dict | None, tool_schemas: list | None,
                history: list, skip: set = frozenset()) -> str:
@@ -35,16 +48,15 @@ def _run_steps(db: Session, run: Run, goal: dict, plan: list,
             continue
         res = execute_step(goal, item, get_facts(db, run.id),
                            tool_schemas, tools, history)
-        db.add(Step(run_id=run.id, n=n, thought=res["thought"][:4000],
-                    tool=res["tool"], args_json=json.dumps(res["args"]),
-                    obs=str(res["obs"])[:4000]))
-        db.commit()
-        # Emit step with n included for frontend
-        _emit(run.id, {"type": "step", "n": n, "thought": res["thought"], 
-                       "tool": res["tool"], "args": res["args"], 
-                       "obs": res["obs"], "final": res["final"]})
-        history.append({"n": n, "tool": res["tool"], "obs": str(res["obs"])[:1500]})
+        _save_step(db, run, n, res, history)
         if run.status == "waiting" or res["final"]:
+            return res["obs"]
+    if final == "" and run.status != "waiting":
+        inside("_wrap_up", run.id)
+        n = max([h["n"] for h in history] + [0]) + 1
+        res = execute_step(goal, {"step": "Produce the final answer for the goal from HISTORY. Reply FINAL: <answer>.", "tool": None}, get_facts(db, run.id), tool_schemas, tools, history)
+        _save_step(db, run, n, res, history)
+        if res["final"]:
             return res["obs"]
     return final
 
