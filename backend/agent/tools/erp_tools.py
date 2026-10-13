@@ -9,7 +9,7 @@ from backend.utils.logging import inside
 def _fmt(r: Invoice) -> str:
     return (f"id={r.id} vendor={r.vendor} invoice_no={r.invoice_no} "
             f"amount={float(r.amount):.2f} due_date={r.due_date} "
-            f"source_file={r.source_file}")
+            f"source_file={r.source_file} source={r.source}")
 
 
 def erp_list(db: Session, vendor: str = "") -> str:
@@ -23,7 +23,7 @@ def erp_list(db: Session, vendor: str = "") -> str:
 
 def erp_create(db: Session, vendor: str = "", invoice_no: str = "",
                amount: float = 0, due_date: str = "",
-               source_file: str = "") -> str:
+               source_file: str = "", source: str = "") -> str:
     inside("erp_create", invoice_no or "-")
     if not invoice_no or not amount:
         return "error: invoice_no and amount required"
@@ -32,7 +32,8 @@ def erp_create(db: Session, vendor: str = "", invoice_no: str = "",
         y, m, d = map(int, due_date.split("-"))
         due = date(y, m, d)
     row = Invoice(vendor=vendor or "?", invoice_no=invoice_no,
-                  amount=amount, due_date=due, source_file=source_file)
+                  amount=amount, due_date=due, source_file=source_file,
+                  source=source or "invoice")
     db.add(row)
     try:
         db.commit()
@@ -52,10 +53,10 @@ SCHEMAS = [
             "vendor": {"type": "string"}}, "required": []}}},
     {"type": "function", "function": {
         "name": "erp_create",
-        "description": "Enter an invoice into the ERP system",
+        "description": "Enter an invoice into the ERP system (source: 'invoice' for parsed PDFs/files, 'web_search' for web prices)",
         "parameters": {"type": "object", "properties": {
             "vendor": {"type": "string"}, "invoice_no": {"type": "string"},
             "amount": {"type": "number"}, "due_date": {"type": "string"},
-            "source_file": {"type": "string"}},
+            "source_file": {"type": "string"}, "source": {"type": "string"}},
             "required": ["invoice_no", "amount"]}}},
 ]

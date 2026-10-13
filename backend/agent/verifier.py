@@ -32,7 +32,7 @@ def gather_evidence(db: Session, run_id: str) -> str:
     rows = db.query(Invoice).order_by(Invoice.id.desc()).limit(20).all()
     lines = [f"OBJECTIVE: {facts.get('objective', '-')}",
              f"CRITERIA: {facts.get('success_criteria', '[]')}"]
-    lines += [f"STEP {s.n} [{s.tool}]: {(s.obs or '')[:400]}" for s in steps]
+    lines += [f"STEP {s.n} [{s.tool}]: {(s.obs or '')[:1500]}" for s in steps]
     trace = " ".join((s.obs or "") for s in steps).lower()
 
     def mentioned(r) -> bool:

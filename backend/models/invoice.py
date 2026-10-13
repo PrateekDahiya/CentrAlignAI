@@ -12,4 +12,5 @@ class Invoice(Base):
     amount: Mapped[float] = mapped_column(Numeric(12, 2))
     due_date: Mapped[str] = mapped_column(Date, nullable=True)
     source_file: Mapped[str] = mapped_column(String(256), default="")
+    source: Mapped[str] = mapped_column(String(20), default="invoice")
     created_at: Mapped[str] = mapped_column(DateTime, server_default=func.now())

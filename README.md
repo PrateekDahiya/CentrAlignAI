@@ -10,7 +10,7 @@ User gives a natural-language task → Groq-powered ReAct agent plans, uses tool
 |---|---|---|
 | Agent brain | Groq API, `openai/gpt-oss-120b` (planner/executor) + `openai/gpt-oss-20b` (verifier/fast), fallback `qwen/qwen3.8-27b` | Free tier, OpenAI-compatible tool calling (verified live). Llama models retired on this key Sep 2026, so gpt-oss is used. `max_tokens>=2048` required (reasoning tokens else empty reply). |
 | Backend | Python 3.12, FastAPI, Uvicorn, SQLAlchemy + PyMySQL | Thin routers, small files (max 31 lines), easy to debug live |
-| DB | MySQL on Aiven (`centralign`, SSL, port 17886) | Tables: `runs`, `steps`, `facts` (memory), `erp_invoices` (`invoice_no` UNIQUE) |
+| DB | MySQL on Aiven (`centralign`, SSL, port 17886) | Tables: `runs`, `steps`, `facts` (memory), `erp_invoices` (`invoice_no` UNIQUE, `source` origin tag) |
 | PDF | pdfplumber (parse) + reportlab (generate fake invoices) | Real extraction, mock data only |
 | Browser | Playwright Chromium (Phase 3) | Real execution for web task |
 | Frontend | React 18 + Vite, proxied `/api` | `api/` (fetch) / `hooks/` (state) / `components/` (presentational) split |
@@ -25,7 +25,7 @@ User gives a natural-language task → Groq-powered ReAct agent plans, uses tool
 [FastAPI :8000] routers/ (erp, inbox, runs, approval, events, trace) → services/ (run, sse, trace)
       │
 [agent/] parser → planner (120b) → executor+tools (registry) → memory (facts) → verifier (20b, fail-closed)
-      │  tools: web_search, browser_open, file_list/read, invoice_parse, erp_create/list, ask_user
+      │  tools: web_search, browser_open, file_list/read, pdf_text/image_text, invoice_parse, erp_create/list, ask_user
 [MySQL Aiven] runs / steps / facts / erp_invoices  +  runs/<id>/trace.jsonl mirror (--replay safe)
 ```
 
