@@ -33,6 +33,8 @@ Human gate: `ask_user` sets run `waiting`; UI approves via `POST /api/runs/{id}/
 
 ## Setup
 
+> Full copy-paste walkthrough (prereqs, both servers, smoke checks, troubleshooting): see **`INSTALL.md`**.
+
 ```powershell
 # 1. clone + python deps
 git clone <repo-url> CentrAlignAI; cd CentrAlignAI
