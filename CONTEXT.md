@@ -9,6 +9,7 @@ Autonomous AI Task Worker prototype. User gives NL task → Python agent loop (G
 - `runs/` — (gitignored) per-run `trace.jsonl` mirrors. Created at runtime.
 
 ## Key files here
+- `PRD.md` — intern problem statement (requirements baseline for the audit).
 - `requirements.txt` — pinned Python deps (fastapi, uvicorn, groq, sqlalchemy, pymysql, pdfplumber, reportlab, playwright, pytest, sse-starlette).
 - `.env.example` — placeholder env (models, DB fields). Copy to `.env` locally. NEVER commit `.env`.
 - `.gitignore` — ignores `.env`, `.venv/`, `__pycache__/`, `runs/`, `*.db`, `data/inbox/*.pdf` (keeps `.gitkeep`), `frontend/node_modules/`, `frontend/dist/`.
