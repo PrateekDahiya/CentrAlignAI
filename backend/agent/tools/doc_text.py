@@ -7,6 +7,8 @@ IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".webp")
 
 
 def _tesseract_cmd() -> str:
+    if os.environ.get("TESSERACT_CMD"):
+        return os.environ["TESSERACT_CMD"]
     import shutil
     found = shutil.which("tesseract")
     if found:

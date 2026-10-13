@@ -38,6 +38,7 @@ Human gate: `ask_user` sets run `waiting`; UI approves via `POST /api/runs/{id}/
 git clone <repo-url> CentrAlignAI; cd CentrAlignAI
 pip install -r requirements.txt
 python -m playwright install chromium   # browser tool needs the binary
+winget install -e --id UB-Mannheim.TesseractOCR --silent   # image OCR needs the binary
 
 # 2. env (NEVER commit .env)
 copy .env.example .env
