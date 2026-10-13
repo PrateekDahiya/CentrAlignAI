@@ -22,7 +22,8 @@ def browser_open(url: str = "") -> str:
     try:
         with sync_playwright() as p:
             try:
-                b = p.chromium.launch(headless=True)
+                # --no-sandbox: required in containers (Render); accepted locally.
+                b = p.chromium.launch(headless=True, args=["--no-sandbox"])
             except Exception as e:
                 return f"browser failed [launch {type(e).__name__}]: {e}"
             try:

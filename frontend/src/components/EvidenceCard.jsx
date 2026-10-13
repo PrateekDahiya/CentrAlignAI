@@ -1,4 +1,5 @@
 import StatusBadge from "./StatusBadge.jsx";
+import { API_BASE } from "../api/base.js";
 
 export default function EvidenceCard({ runId, status, verified, evidence }) {
   if (!runId) return null;
@@ -16,7 +17,7 @@ export default function EvidenceCard({ runId, status, verified, evidence }) {
       </div>
       <a
         className="btn btn-ghost btn-sm"
-        href={`/api/runs/${runId}/trace`}
+        href={`${API_BASE}/api/runs/${runId}/trace`}
         target="_blank"
         rel="noreferrer"
       >

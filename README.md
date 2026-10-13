@@ -84,6 +84,8 @@ cd frontend; npm run build; cd ..   # → frontend/dist/ (serve via static or ng
 pytest -q                            # Phase 5+
 ```
 
+Deploy to Render: see **`DEPLOY.md`** (`Dockerfile` + `render.yaml` blueprint; image build + boot verified locally).
+
 ## Key technical decisions
 
 1. **Custom ReAct loop, not LangGraph/CrewAI** — own the autonomy logic, explainable in viva, per-file (`parser/planner/executor/verifier`).

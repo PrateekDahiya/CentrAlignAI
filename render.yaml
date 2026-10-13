@@ -1,0 +1,41 @@
+# Render Blueprint: API (docker) + UI (static). "New → Blueprint" and fill secrets.
+services:
+  - type: web
+    name: centralign-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 17886
+      - key: DB_NAME
+        value: centralign
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSL
+        value: true
+      - key: MAX_TOKENS
+        value: 2048
+      - key: MAX_STEPS
+        value: 12
+      # File tools fall back to data/inbox in the cloud (no FILE_ROOTS there).
+
+  - type: web
+    name: centralign-ui
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: centralign-api
+          property: host

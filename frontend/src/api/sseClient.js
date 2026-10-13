@@ -1,9 +1,11 @@
 const FORWARD = ["step", "goal", "plan", "paused", "resumed", "timeout"];
 
+import { API_BASE } from "./base.js";
+
 export function subscribeEvents(runId, onMsg, onDone) {
   console.info(`inside subscribeEvents for ${runId}`);
   if (!runId) return () => {};
-  const es = new EventSource(`/api/runs/${runId}/events`);
+  const es = new EventSource(`${API_BASE}/api/runs/${runId}/events`);
   const close = () => es.close();
 
   FORWARD.forEach((t) =>
