@@ -7,8 +7,14 @@ IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".webp")
 
 
 def _tesseract_cmd() -> str:
+    """TESSERACT_CMD env → repo-bundled (third_party/) → PATH → Program Files."""
     if os.environ.get("TESSERACT_CMD"):
         return os.environ["TESSERACT_CMD"]
+    bundled = os.path.join(os.path.dirname(__file__), "..", "..", "..",
+                           "third_party", "tesseract", "tesseract.exe")
+    bundled = os.path.abspath(bundled)
+    if os.path.isfile(bundled):
+        return bundled
     import shutil
     found = shutil.which("tesseract")
     if found:

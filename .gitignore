@@ -11,6 +11,9 @@ runs/
 data/inbox/*.pdf
 !data/inbox/.gitkeep
 
+# fetched native binaries (recreated by third_party/fetch_*.py)
+third_party/tesseract/
+
 # frontend
 frontend/node_modules/
 frontend/dist/
