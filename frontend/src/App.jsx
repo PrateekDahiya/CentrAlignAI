@@ -14,6 +14,8 @@ export default function App() {
   const shownId = viewId || runId;
   const { status, question, waiting, approve, decline, verified, evidence } =
     useApproval(shownId);
+  const busy =
+    !!shownId && (status === "" || status === "running" || status === "waiting");
   return (
     <div className="layout">
       <aside className="sidebar">
@@ -30,6 +32,7 @@ export default function App() {
           <p>Describe the goal — the agent plans, acts, verifies, and reports back.</p>
         </div>
         <TaskForm
+          busy={busy}
           onSubmit={(t) => {
             setViewId(null);
             createRun(t);
@@ -37,7 +40,8 @@ export default function App() {
         />
         {shownId && (
           <p className="run-line">
-            run: {shownId} <StatusBadge status={status || "running"} />
+            run: {String(shownId).slice(0, 8)}…{" "}
+            <StatusBadge status={status || "running"} />
           </p>
         )}
         {waiting && (

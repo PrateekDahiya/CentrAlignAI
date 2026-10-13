@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { subscribeEvents } from "../api/sseClient.js";
 
+const KEEP = ["step", "goal", "plan", "done", "paused", "resumed", "timeout"];
+
 export function useRunEvents(runId) {
   const [events, setEvents] = useState([]);
-  // Step numbers already shown. Survives StrictMode remounts and any
-  // reconnect replay, so a step is never appended twice.
+  // Raw messages already shown. Survives StrictMode remounts and any
+  // reconnect replay, so an event is never appended twice.
   const seen = useRef(new Set());
 
   useEffect(() => {
@@ -20,11 +22,9 @@ export function useRunEvents(runId) {
       (m) => {
         try {
           const ev = JSON.parse(m);
-          // Only add step events
-          if (ev.type !== "step") return;
-          const key = ev.n ?? m;
-          if (seen.current.has(key)) return;
-          seen.current.add(key);
+          if (!KEEP.includes(ev.type)) return;
+          if (seen.current.has(m)) return;
+          seen.current.add(m);
           setEvents((p) => [...p, m]);
         } catch (e) {
           console.error("Error parsing event:", e);

@@ -1,20 +1,26 @@
 import StepItem from "./StepItem.jsx";
 import { useRunEvents } from "../hooks/useRunEvents.js";
 
+function parse(e) {
+  try {
+    return JSON.parse(e);
+  } catch {
+    return { type: "message", text: e };
+  }
+}
+
 export default function StepList({ runId }) {
   const events = useRunEvents(runId);
   if (!runId) return null;
-  // events is an array of raw SSE message strings (JSON objects)
-  const rendered = events.map((e, i) => {
-    try {
-      const ev = JSON.parse(e);
-      // Extract step from the nested structure
-      const step = ev.step ? { ...ev.step, n: ev.n } : ev;
-      return <StepItem key={i} step={step} />;
-    } catch {
-      // fallback: show raw text
-      return <StepItem key={i} step={{ text: e }} />;
-    }
-  });
-  return <div className="steps">{rendered}</div>;
+  if (!events.length) {
+    return <p className="empty">Waiting for the agent’s first step…</p>;
+  }
+  return (
+    <div className="steps">
+      {events.map((e, i) => {
+        const ev = parse(e);
+        return <StepItem key={ev.n ?? i} event={ev} />;
+      })}
+    </div>
+  );
 }
