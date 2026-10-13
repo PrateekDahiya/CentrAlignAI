@@ -1,5 +1,6 @@
 """One ReAct step: Groq tool call + dispatch + retry. No orchestration."""
 import json
+import re
 import time
 from backend.agent.groq_client import chat
 from backend.agent.prompts.executor_prompt import EXECUTOR_SYSTEM
@@ -57,8 +58,12 @@ def execute_step(goal: dict, step_hint: dict, facts: dict,
     thought = msg.content or getattr(msg, "reasoning", "") or ""
     calls = msg.tool_calls or []
     if not calls:
+        m = re.search(r"(^|\n)\s*FINAL:\s*", thought)
+        if m:
+            return {"thought": thought, "tool": "", "args": {},
+                    "obs": thought[m.end():].strip() or thought, "final": True}
         return {"thought": thought, "tool": "", "args": {},
-                "obs": thought, "final": thought.startswith("FINAL:")}
+                "obs": thought, "final": False}
     outs, used, last_args = [], "", {}
     for tc in calls:
         name = tc.function.name
