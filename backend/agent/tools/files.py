@@ -43,14 +43,18 @@ def resolve(name: str) -> str:
 
 def file_list(directory: str = "") -> str:
     inside("file_list", directory or "inbox")
-    base = resolve(directory) if directory else INBOX
+    if not directory:
+        names = sorted(os.listdir(INBOX))
+        return "files: " + (", ".join(names) if names else "(empty)")
+    try:
+        base = resolve(directory)
+    except ValueError as e:
+        return f"refused: {e}"
     if not os.path.isdir(base):
-        base = INBOX
-        note = f"no such subdir {directory!r}; showing inbox. "
-    else:
-        note = ""
+        return (f"no such directory {directory!r}; relative names resolve "
+                f"under inbox ({INBOX}); otherwise pass a full absolute path.")
     names = sorted(os.listdir(base))
-    return note + "files: " + (", ".join(names) if names else "(empty)")
+    return "files: " + (", ".join(names) if names else "(empty)")
 
 
 def file_read(path: str) -> str:
