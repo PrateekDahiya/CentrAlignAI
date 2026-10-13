@@ -33,12 +33,21 @@ def gather_evidence(db: Session, run_id: str) -> str:
     lines = [f"OBJECTIVE: {facts.get('objective', '-')}",
              f"CRITERIA: {facts.get('success_criteria', '[]')}"]
     lines += [f"STEP {s.n} [{s.tool}]: {(s.obs or '')[:400]}" for s in steps]
-    if rows:
-        lines.append("ERP:")
+    trace = " ".join((s.obs or "") for s in steps).lower()
+
+    def mentioned(r) -> bool:
+        if r.invoice_no and r.invoice_no.lower() in trace:
+            return True
+        return any(w in trace for w in (r.vendor or "").lower().split()
+                   if len(w) > 3)
+
+    hits = [r for r in rows if mentioned(r)]
+    if hits:
+        lines.append("ERP (rows referenced by this run):")
         lines += [f"- {r.vendor} {r.invoice_no} {float(r.amount):.2f} {r.due_date}"
-                  for r in rows]
+                  for r in hits]
     else:
-        lines.append("ERP: (empty)")
+        lines.append("ERP: (no rows referenced by this run's steps)")
     return "\n".join(lines)
 
 
