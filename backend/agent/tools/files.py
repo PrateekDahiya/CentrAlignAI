@@ -1,16 +1,31 @@
-"""Local inbox file tools. Pure functions, no DB/LLM."""
+"""Local file tools under allowed roots. Pure functions, no DB/LLM."""
 import os
+from backend.config import settings
 from backend.utils.logging import inside
 
 INBOX = os.path.abspath(os.path.join(
     os.path.dirname(__file__), "..", "..", "..", "data", "inbox"))
 
+ROOTS = [os.path.abspath(r) for r in settings.file_roots] or [INBOX]
+
+SENSITIVE_NAMES = (".env",)
+SENSITIVE_SUFFIXES = (".pem", ".key",)
+SENSITIVE_PARTS = ("id_rsa",)
+
+
+def _sensitive(base: str) -> bool:
+    low = base.lower()
+    return (low in SENSITIVE_NAMES or low.endswith(SENSITIVE_SUFFIXES)
+            or any(p in low for p in SENSITIVE_PARTS))
+
 
 def resolve(name: str) -> str:
-    """Inbox-relative path, rejects traversal outside INBOX."""
-    p = os.path.abspath(os.path.join(INBOX, name))
-    if not p.startswith(INBOX):
-        raise ValueError("path outside inbox")
+    """Absolute or inbox-relative path; must sit under an allowed root."""
+    p = os.path.abspath(name if os.path.isabs(name) else os.path.join(INBOX, name))
+    if _sensitive(os.path.basename(p)):
+        raise ValueError(f"refused: sensitive file {name!r}")
+    if not any(p == r or p.startswith(r + os.sep) for r in ROOTS):
+        raise ValueError(f"path outside allowed roots {name!r}")
     return p
 
 
@@ -37,12 +52,12 @@ def file_read(path: str) -> str:
 SCHEMAS = [
     {"type": "function", "function": {
         "name": "file_list",
-        "description": "List files in the invoice inbox directory",
+        "description": "List files under an allowed root (inbox by default; absolute paths under FILE_ROOTS also work)",
         "parameters": {"type": "object", "properties": {
             "directory": {"type": "string"}}, "required": []}}},
     {"type": "function", "function": {
         "name": "file_read",
-        "description": "Read a text file from the inbox (not PDFs)",
+        "description": "Read a text file under an allowed root (not PDFs, not secrets)",
         "parameters": {"type": "object", "properties": {
             "path": {"type": "string"}}, "required": ["path"]}}},
 ]

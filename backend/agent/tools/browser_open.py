@@ -21,7 +21,7 @@ def browser_open(url: str = "") -> str:
             pg.screenshot(path=shot)
             b.close()
     except Exception as e:
-        return f"browser failed: {e}"
+        return f"browser failed [{type(e).__name__}]: {e}"
     return f"title={title}\nshot={shot}\n{text}"
 
 

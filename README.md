@@ -37,10 +37,13 @@ Human gate: `ask_user` sets run `waiting`; UI approves via `POST /api/runs/{id}/
 # 1. clone + python deps
 git clone <repo-url> CentrAlignAI; cd CentrAlignAI
 pip install -r requirements.txt
+python -m playwright install chromium   # browser tool needs the binary
 
 # 2. env (NEVER commit .env)
 copy .env.example .env
 # edit .env: GROQ_API_KEY, DB_HOST/PORT/NAME/USERNAME/PASSWORD, models (see .env.example)
+# optional: FILE_ROOTS=D:/documents/Projects  (; separated, needs restart)
+#   lets file_list/file_read reach outside data/inbox; secrets stay blocked
 
 # 3. DB + seed inbox PDFs
 python -m backend.seed.seed_db
