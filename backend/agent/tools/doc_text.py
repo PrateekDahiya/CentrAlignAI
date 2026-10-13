@@ -6,6 +6,16 @@ from backend.utils.logging import inside
 IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".webp")
 
 
+def _tesseract_cmd() -> str:
+    import shutil
+    found = shutil.which("tesseract")
+    if found:
+        return found
+    guess = os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"),
+                         "Tesseract-OCR", "tesseract.exe")
+    return guess if os.path.isfile(guess) else "tesseract"
+
+
 def pdf_text(path: str, max_chars: int = 6000) -> str:
     inside("pdf_text", path)
     try:
@@ -50,6 +60,7 @@ def image_text(path: str) -> str:
         return ("ocr unavailable: install it with `pip install pillow pytesseract` "
                 "plus the Tesseract binary (https://github.com/tesseract-ocr/tesseract), "
                 "then restart the backend")
+    pytesseract.pytesseract.tesseract_cmd = _tesseract_cmd()
     try:
         return (pytesseract.image_to_string(Image.open(target)).strip()
                 or "(no text detected)")[:6000]
