@@ -5,12 +5,14 @@ import RunHistory from "./components/RunHistory.jsx";
 import EvidenceCard from "./components/EvidenceCard.jsx";
 import { useRun } from "./hooks/useRun.js";
 import { useApproval } from "./hooks/useApproval.js";
+import { useSidebarWidth } from "./hooks/useSidebarWidth.js";
 import StatusBadge from "./components/StatusBadge.jsx";
 import ApprovalModal from "./components/ApprovalModal.jsx";
 
 export default function App() {
   const { runId, createRun, clearRun } = useRun();
   const [viewId, setViewId] = useState(null);
+  const { width, dragging, start } = useSidebarWidth();
   const shownId = viewId || runId;
   const { status, question, waiting, approve, decline, verified, evidence } =
     useApproval(shownId);
@@ -22,7 +24,7 @@ export default function App() {
   }
   return (
     <div className="layout">
-      <aside className="sidebar">
+      <aside className="sidebar" style={{ "--side-w": `${width}px` }}>
         <div className="sidebar-top">
           <span className="brand">CentrAlignAI</span>
           <button className="btn btn-new" type="button" onClick={newChat}>
@@ -34,6 +36,11 @@ export default function App() {
           liveId={runId}
           onSelect={setViewId}
           refreshKey={runId}
+        />
+        <div
+          className={`resize-handle${dragging ? " active" : ""}`}
+          onMouseDown={start}
+          title="Drag to resize"
         />
       </aside>
       <main className="app">
