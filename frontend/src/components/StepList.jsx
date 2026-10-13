@@ -14,7 +14,14 @@ export default function StepList({ runId, busy }) {
   const events = useRunEvents(runId);
   const endRef = useRef(null);
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    // Follow the stream only if the user is already near the bottom —
+    // never yank the viewport away from what they're reading.
+    const nearBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 160;
+    if (nearBottom) {
+      endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   }, [events.length, runId]);
   if (!runId) return null;
   if (!events.length) {
