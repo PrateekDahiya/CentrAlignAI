@@ -3,7 +3,7 @@
 Presentational only. Props in, no direct `fetch`/`EventSource`.
 
 ## Files
-- `TaskForm.jsx:1` — textarea + Run button (`busy` disables, shows Working…), 3 clickable example chips, clears after submit, `onSubmit(task)` prop.
+- `TaskForm.jsx:1` — textarea (autofocus, Enter-to-run, 4 rows) + Run button (`busy` disables, shows Working…), 3 clickable example chips, clears after submit, `onSubmit(task)` prop.
 - `StepList.jsx:1` — subscribes via `useRunEvents(runId)`, empty-state line when idle, renders `StepItem` per event, auto-scrolls to latest, "Agent is working…" footer while `busy`.
 - `StepItem.jsx:1` — typed cards: goal (objective + criteria), plan (numbered + tone tool chips), step (number badge + thought + collapsible output, auto-open on errors/questions), done (Answer card, pre-wrapped final) / paused (question callout), fallback note.
 - `ApprovalModal.jsx:1` — fixed overlay: question + answer textarea + Approve & resume / Decline. Shown by `App.jsx` when `useApproval(runId).waiting`.

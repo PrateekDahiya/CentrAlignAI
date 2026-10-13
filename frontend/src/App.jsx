@@ -64,8 +64,20 @@ export default function App() {
         {waiting && (
           <ApprovalModal question={question} onApprove={approve} onDecline={decline} />
         )}
-        <h3>Steps</h3>
-        <StepList runId={shownId} busy={busy} />
+        {shownId ? (
+          <>
+            <h3 className="section-title">Steps</h3>
+            <StepList runId={shownId} busy={busy} />
+          </>
+        ) : (
+          <div className="idle-card">
+            <p className="idle-title">No active run</p>
+            <p className="idle-text">
+              Describe your goal above — the agent will plan, act, verify, and
+              report back. Past runs live in the left panel.
+            </p>
+          </div>
+        )}
         <EvidenceCard
           runId={shownId}
           status={status}

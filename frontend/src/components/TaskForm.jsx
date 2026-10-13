@@ -37,13 +37,21 @@ export default function TaskForm({ onSubmit, busy }) {
       <textarea
         value={task}
         onChange={(e) => setTask(e.target.value)}
-        rows={3}
-        placeholder="e.g. Find latest Acme invoice, enter it into ERP, tell me when done"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            submit();
+          }
+        }}
+        rows={4}
+        autoFocus
+        placeholder="e.g. Read ResumeOct.pdf from D:\Documents\MyDoc and suggest improvements"
       />
       <div className="task-actions">
-        <button className="btn" type="submit" disabled={busy}>
+        <button className="btn btn-run" type="submit" disabled={busy}>
           {busy ? "Working…" : "Run agent"}
         </button>
+        <span className="hint">Enter to run · Shift+Enter for a new line</span>
       </div>
       <div className="examples">
         <span className="examples-label">Try:</span>

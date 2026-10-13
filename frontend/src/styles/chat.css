@@ -109,3 +109,25 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
   .sidebar { width: auto; }
   .resize-handle { display: none; }
 }
+
+/* header + input hero */
+.app-head h2 { font-size: 30px; letter-spacing: -0.01em; }
+.app-head p { font-size: 15px; }
+.section-title { margin: 24px 0 4px; font-size: 16px; }
+.task-form { padding: 18px; }
+.task-form textarea { min-height: 96px; font-size: 15px; line-height: 1.5; }
+.task-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 12px;
+}
+.btn-run { margin-top: 0; padding: 10px 28px; font-size: 15px; }
+.hint { font-size: 12px; color: var(--muted); }
+
+/* idle state */
+.idle-card {
+  margin-top: 18px; background: var(--card);
+  border: 1px dashed var(--line); border-radius: 12px;
+  padding: 26px 22px; text-align: center;
+}
+.idle-title { margin: 0 0 6px; font-weight: 700; font-size: 15px; }
+.idle-text { margin: 0; color: var(--muted); font-size: 14px; }
