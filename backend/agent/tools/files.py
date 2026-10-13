@@ -25,7 +25,10 @@ def resolve(name: str) -> str:
     if _sensitive(os.path.basename(p)):
         raise ValueError(f"refused: sensitive file {name!r}")
     if not any(p == r or p.startswith(r + os.sep) for r in ROOTS):
-        raise ValueError(f"path outside allowed roots {name!r}")
+        raise ValueError(
+            f"path outside allowed roots {name!r}; ask the user to add it "
+            "to FILE_ROOTS in .env and restart the backend, or to supply "
+            "the files another way")
     return p
 
 

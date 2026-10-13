@@ -7,19 +7,30 @@ export function useRunHistory(refreshKey) {
   useEffect(() => {
     console.info(`inside useRunHistory for ${refreshKey}`);
     let stop = false;
+    let t = null;
     async function load() {
+      let list;
       try {
-        const list = await fetchRuns();
-        if (!stop) setRuns(list);
+        list = await fetchRuns();
       } catch {
-        /* server may restart; retry next poll */
+        return; /* server may restart; retry next poll */
+      }
+      if (stop) return;
+      setRuns(list);
+      // No active agent -> stop polling until a new run appears.
+      const active = list.some(
+        (r) => r.status === "running" || r.status === "waiting"
+      );
+      if (!active && t) {
+        clearInterval(t);
+        t = null;
       }
     }
     load();
-    const t = setInterval(load, 5000);
+    t = setInterval(load, 5000);
     return () => {
       stop = true;
-      clearInterval(t);
+      if (t) clearInterval(t);
     };
   }, [refreshKey]);
 
